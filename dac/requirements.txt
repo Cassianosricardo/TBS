@@ -1,0 +1,6 @@
+django
+psycopg2
+mysqlclient
+djangorestframework
+markdown
+django-filter

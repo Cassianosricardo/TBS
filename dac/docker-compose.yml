@@ -1,0 +1,41 @@
+version: '2' 
+services:
+  estoque_db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: estoque
+      MYSQL_USER: admin 
+      MYSQL_PASSWORD: admin
+    volumes:
+       - estoque_vol:/var/lib/mysql 
+  estoque_web:
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./estoque/:/code
+    ports:
+      - "9001:8000"
+    depends_on:
+      - estoque_db
+  vendas_db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: vendas
+      MYSQL_USER: admin 
+      MYSQL_PASSWORD: admin
+    volumes:
+       - vendas_vol:/var/lib/mysql 
+  vendas_web:
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./vendas/:/code
+    ports:
+      - "9002:8000"
+    depends_on:
+      - vendas_db
+volumes:
+  vendas_vol:
+  estoque_vol:
