@@ -1,0 +1,37 @@
+{% extends 'vendas/base.html' %}
+{%block content%}
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:340px;margin-right:40px">
+    <!-- Produtos -->
+      <div class="w3-container" id="packages" style="margin-top:50px">
+        <h1 class="w3-xxxlarge w3-text-blue"><b>Produtos disponíveis para venda</b></h1>
+        <hr style="width:50px;border:5px solid blue" class="w3-round">
+    </div>
+    <br>
+      <table id="t01" class="display">
+        <thead>
+          <tr>
+          <th>Nome</th>
+          <th>Código</th>
+          <th>Quantidade</th>
+          <th>Categoria</th>
+          <th>Preço</th>          
+        </tr>  
+      </thead>      
+      <tbody>
+        {% for p in data%}
+          {% if p.vendable%}          
+            <tr>
+              <td>{{p.name}}</td>
+              <td>{{p.id}}</td>
+              <td>{{p.quantity}}</td>
+              <td>{{p.categorie}}</td>
+              <td>{{p.price}}</td>            
+            </tr>          
+          {%endif%}                      
+        {%endfor%}
+    </tbody>
+    </table>
+    <!-- End page content -->
+    </div>
+{%endblock%}
