@@ -1,0 +1,71 @@
+{%extends 'vendas/base.html'%}
+{%block content%}
+<!-- !PAGE CONTENT! -->
+    <div class="w3-main" style="margin-left:340px;margin-right:40px">     
+      <form method="post">
+        <div class="w3-section">
+          <label>Código do produto</label>
+          <input class="w3-input w3-border" type="text" name="login" value="" placeholder="Insira o código do produto...">
+        </div>
+      </form>
+      <br>
+      <table id="t01" class="display">
+          <thead>
+            <tr>
+            <th>Nome</th>
+            <th>Código</th>
+            <th>Em estoque</th>            
+            <th>Preço</th>          
+          </tr>  
+        </thead>      
+        <tbody>            
+          {% for p in products%}
+            {% if p.vendable%}          
+              <tr>
+                <td>{{p.name}}</td>
+                <td>{{p.id}}</td>
+                <td>{{p.quantity}}</td>                
+                <td>{{p.price}}</td>            
+              </tr>          
+            {%endif%}                      
+          {%endfor%}
+      </tbody>
+      </table>
+
+      <form action="index.html" method="post">
+        <div class="w3-section">
+          <label>Quantidade</label>
+          <input type="number" name="qtde" value="1" min="1">
+
+        </div>
+      </form>
+
+      <div class="w3-container" id="packages" style="margin-top:50px">
+        <h1 class="w3-xxxlarge w3-text-blue"><b>Total de produtos.</b></h1>
+        <hr style="width:50px;border:5px solid blue" class="w3-round">
+      </div>
+
+      <table id="t01">
+        <tr>
+          <th>Produto</th>
+          <th>Preço</th>
+          <th>Quantidade</th>
+        </tr>
+        <tr>
+          <td>Teste</td>
+          <td></td>
+          <td></td>
+        </tr>
+      </table>
+      <br>
+      <label>Preço total:</label>
+      <input type="text" name="" value="" disabled>
+      <!-- End page content -->
+      <br>
+      <form action="index.html" method="post">
+        <div class="w3-section">
+          <input type="submit" name="fim" value="Finalizar compra">
+        </div>
+      </form>
+    </div>
+{%endblock%}
