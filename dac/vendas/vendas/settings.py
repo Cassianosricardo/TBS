@@ -25,7 +25,7 @@ SECRET_KEY = 'lhiz3_y%-l(fm$0p!o5deeza43ji7y)*6+#i!sfv((^qhe&p!s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'products',
+    'sales'
 ]
 
 MIDDLEWARE = [
@@ -51,7 +53,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'vendas.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -71,6 +72,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'vendas.wsgi.application'
 
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/users/login'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # Database
