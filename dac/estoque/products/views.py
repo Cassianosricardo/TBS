@@ -98,16 +98,17 @@ def update(request, id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
 
 
-# @csrf_exempt
-# @api_view(['POST'])
-# def mass_update(request):
-#     for id in request.posts.ids:    
-#         try:
-#             product = Product.objects.get(id=id)
-#         except Product.DoesNotExist:
-#             return Response(status=status.HTTP_404_NOT_FOUND)                    
-#         serializer = ProductSerializer(product, data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+@csrf_exempt
+@api_view(['POST'])
+def mass_update(request):
+    print (request.POST)
+    # for id in request.posts.ids:    
+    #     try:
+    #         product = Product.objects.get(id=id)
+    #     except Product.DoesNotExist:
+    #         return Response(status=status.HTTP_404_NOT_FOUND)                    
+    #     serializer = ProductSerializer(product, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST) 

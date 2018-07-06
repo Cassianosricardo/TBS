@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import list_products, create_product, update_product, delete_product, receive_product, listall, listOne, update
+from .views import list_products, create_product, update_product, delete_product, receive_product, listall, listOne, update, mass_update
 
 # CRUD - CREATE, READ, UPDATE, DELETE
 urlpatterns = [
@@ -12,4 +12,5 @@ urlpatterns = [
     path('list', listall, name='list'),
     path('api_update/<int:id>/', update, name='update'),
     path('get/<int:id>/', listOne, name='list_one'),
+    path('mass_update/', mass_update, name='mass update'),
 ]

@@ -1,71 +1,154 @@
 {%extends 'vendas/base.html'%}
 {%block content%}
-<!-- !PAGE CONTENT! -->
-    <div class="w3-main" style="margin-left:340px;margin-right:40px">     
-      <form method="post">
-        <div class="w3-section">
-          <label>Código do produto</label>
-          <input class="w3-input w3-border" type="text" name="login" value="" placeholder="Insira o código do produto...">
-        </div>
-      </form>
-      <br>
+    <div class="w3-main" style="margin-left:340px;margin-right:40px">
+      <div>Categoria</div> 
+      <select id ="categorias"></select>                       
       <table id="t01" class="display">
-          <thead>
+          <thead id="head">
             <tr>
             <th>Nome</th>
             <th>Código</th>
             <th>Em estoque</th>            
-            <th>Preço</th>          
+            <th>Preço</th>   
+            <th>Adicionar</th>                                
           </tr>  
         </thead>      
-        <tbody>            
-          {% for p in products%}
-            {% if p.vendable%}          
-              <tr>
-                <td>{{p.name}}</td>
-                <td>{{p.id}}</td>
-                <td>{{p.quantity}}</td>                
-                <td>{{p.price}}</td>            
-              </tr>          
-            {%endif%}                      
-          {%endfor%}
+        <tbody id="body">                                        
       </tbody>
-      </table>
-
-      <form action="index.html" method="post">
-        <div class="w3-section">
-          <label>Quantidade</label>
-          <input type="number" name="qtde" value="1" min="1">
-
-        </div>
-      </form>
+      </table>      
 
       <div class="w3-container" id="packages" style="margin-top:50px">
         <h1 class="w3-xxxlarge w3-text-blue"><b>Total de produtos.</b></h1>
         <hr style="width:50px;border:5px solid blue" class="w3-round">
       </div>
-
-      <table id="t01">
+      <form id="myform" method="POST">
+        {% csrf_token %}
+      <table id="t02">
+        <thead>
         <tr>
           <th>Produto</th>
           <th>Preço</th>
-          <th>Quantidade</th>
+          <th>Quantidade</th>          
         </tr>
-        <tr>
-          <td>Teste</td>
-          <td></td>
-          <td></td>
-        </tr>
-      </table>
+      </thead>
+      <tbody>
+      </tbody>
+      </table>    
       <br>
       <label>Preço total:</label>
-      <input type="text" name="" value="" disabled>
-      <!-- End page content -->
-      <br>
-      <form action="index.html" method="post">
+      <input id="total" type="text" name="" value="" disabled>      
+      <br>      
         <div class="w3-section">
-          <input type="submit" name="fim" value="Finalizar compra">
+          <input type="submit" form="myform" value="Finalizar compra">
         </div>
       </form>
     </div>
+    <script>
+        $(document).ready(function(){  
+          $("#categorias").ready(function(){              
+              $.ajax({
+                  url: '/sales/categories',
+                  type: 'get',                
+                  dataType: 'json',
+                  success:function(response){                    
+                      var len = response.length;      
+                      $("#categorias").empty();
+                      for( var i = 0; i<len; i++){
+                          var id = response[i]['id'];
+                          var name = response[i]['name'];                          
+                          $("#categorias").append("<option value='"+id+"'>"+name+"</option>");      
+                      }
+                  },
+                  error: function (request, status, error) {
+                    console.log(request.responseText);
+                }
+              });
+          });
+          var table = $('#t01').DataTable();
+          $("#categorias").change(function(){
+            var cat_id = $(this).val();
+            console.log(cat_id);            
+            $.ajax({
+                url: '/sales/products/'+cat_id,
+                type: 'get',                
+                dataType: 'json',
+                success:function(response){
+                    console.log(response)
+                    var len = response.length;                                        
+                    table.clear();
+                    for( var i = 0; i<len; i++){
+                        var id = response[i]['id'];
+                        var name = response[i]['name'];
+                        var quantity = response[i]['quantity'];
+                        var price = response[i]['price'];
+                        var vendable = response[i]['vendable'];
+                        if (vendable){                          
+                          table.row.add($(
+                          '<tr>' +
+                          '<td>'+name+'</td>' +
+                          '<td>'+id+'</td>' +
+                          '<td>'+quantity+'</td>' +
+                          '<td>'+price+'</td>' +
+                          '<td><button onclick="myFunction('+id+')">add</button></td>' +                          
+                          '</tr>'
+                          )).draw(false);
+                        }
+                    }                    
+                },
+                error: function (request, status, error) {
+                  console.log(request.responseText);
+              }
+            });
+        });
+        var tabler = $('#t02').DataTable({
+          pageLength: 4
+         });
+      
+         // Handle form submission event
+         $('#myform').on('submit', function(e){
+            // Prevent actual form submission
+            e.preventDefault();
+      
+            // Serialize form data
+            var data = tabler.$('input,select,textarea').serialize();
+      
+            // Submit form data via Ajax
+            $.post({
+               url: '/sales/finish/',
+               data: data
+            });
+         });
+});      
+</script>
+<script>
+  function myFunction(id){
+  var tabletwo = $('#t02').DataTable();
+  old_price = parseFloat($("#total").val());
+  $.ajax({
+    url: '/sales/product/'+id,
+    type: 'get',                
+    dataType: 'json',
+    success:function(response){
+        console.log(response)                        
+        var id = response['id'];
+        var name = response['name'];
+        var quantity = response['quantity'];
+        var price = response['price'];
+        var vendable = response['vendable'];                                  
+          tabletwo.row.add($(
+          '<tr>' +
+          '<td>'+name+'</td>' +                    
+          '<td>'+price+'</td>' +
+          "<td><input type='number' value='quantidade'></input></td>" +          
+          '</tr>'
+          )).draw(false);                                             
+          $("#total").val((old_price) + parseFloat(price));
+    },
+    error: function (request, status, error) {
+      console.log(request.responseText);
+  }
+});
+
+}
+</script>
 {%endblock%}
