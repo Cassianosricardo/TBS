@@ -7,6 +7,9 @@ from django.contrib.admin.views.decorators import staff_member_required
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle
+from rest_framework.views import APIView
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
@@ -63,10 +66,11 @@ def delete_product(request, id):
 
 #### API METHODS ###
 
-@csrf_exempt
+
 @api_view(['GET'])
+@csrf_exempt
 def listall(request):        
-    products = Product.objects.all()
+    products = Product.objects.all()    
     serializer = ProductSerializer(products, many=True)
     return JsonResponse(serializer.data, safe=False)
 
@@ -92,3 +96,18 @@ def update(request, id):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+
+
+# @csrf_exempt
+# @api_view(['POST'])
+# def mass_update(request):
+#     for id in request.posts.ids:    
+#         try:
+#             product = Product.objects.get(id=id)
+#         except Product.DoesNotExist:
+#             return Response(status=status.HTTP_404_NOT_FOUND)                    
+#         serializer = ProductSerializer(product, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
